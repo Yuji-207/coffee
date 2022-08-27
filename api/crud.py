@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+
 from sqlalchemy.orm import Session
 
 from . import models, schemas
@@ -16,7 +18,14 @@ def get_users(db: Session, skip: int=0, limit: int=100):
 
 
 def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(email=user.email, password=user.password)
+    created = dt.now()
+    db_user = models.User(
+        name=user.name,
+        email=user.email,
+        password=user.password,
+        created=created,
+        edited=created,
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -32,7 +41,13 @@ def get_recipes(db: Session, skip: int=0, limit: int=100):
 
 
 def create_recipe(db: Session, recipe: schemas.RecipeCreate, user_id: int):
-    db_recipe = models.Recipe(**recipe.dict(), user_id=user_id)
+    created = dt.now()
+    db_recipe = models.Recipe(
+        **recipe.dict(),
+        user_id=user_id,
+        created=created,
+        edited=created,
+    )
     db.add(db_recipe)
     db.commit()
     db.refresh(db_recipe)
