@@ -42,7 +42,12 @@ def read_user(user_id: int, db: Session=Depends(get_db)):
 
 @app.post('/users/{user_id}/recipes/', response_model=schemas.Recipe)
 def create_recipe(user_id: int, recipe: schemas.RecipeCreate, db: Session=Depends(get_db)):
+    db_user = crud.get_user(db, id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=400, detail='User not found')
     return crud.create_recipe(db=db, recipe=recipe, user_id=user_id)
+        
+    
 
 
 @app.get('/recipes/', response_model=list[schemas.Recipe])
