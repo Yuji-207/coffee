@@ -22,7 +22,7 @@ class Recipe(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     temperature = Column(Integer)
-    creator_id = Column(Integer, ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     created = Column(DateTime)
 
     creator = relationship('User', back_populates='recipes')

@@ -13,7 +13,7 @@ class RecipeCreate(RecipeBase):
 
 class Recipe(RecipeBase):
     id: int
-    creator_id: int
+    user_id: int
     created: datetime
 
     class Config:
