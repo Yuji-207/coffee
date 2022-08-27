@@ -46,7 +46,6 @@ def create_recipe(db: Session, recipe: schemas.RecipeCreate, user_id: int):
         **recipe.dict(),
         user_id=user_id,
         created=created,
-        edited=created,
     )
     db.add(db_recipe)
     db.commit()
