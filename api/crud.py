@@ -32,7 +32,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
-def get_user(db: Session, id: int):
+def get_recipe(db: Session, id: int):
     return db.query(models.Recipe).filter(models.Recipe.id == id).first()
 
     
