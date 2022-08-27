@@ -46,8 +46,6 @@ def create_recipe(user_id: int, recipe: schemas.RecipeCreate, db: Session=Depend
     if db_user is None:
         raise HTTPException(status_code=400, detail='User not found')
     return crud.create_recipe(db=db, recipe=recipe, user_id=user_id)
-        
-    
 
 
 @app.get('/recipes/', response_model=list[schemas.Recipe])
@@ -56,7 +54,7 @@ def read_recipes(skip: int=0, limit: int=100, db: Session=Depends(get_db)):
     return recipes
 
 
-@app.get('/recipes/{recipe_id}', response_model=schemas.User)
+@app.get('/recipes/{recipe_id}', response_model=schemas.Recipe)
 def read_recipe(recipe_id: int, db: Session=Depends(get_db)):
     db_recipe = crud.get_recipe(db, id=recipe_id)
     if db_recipe is None:
