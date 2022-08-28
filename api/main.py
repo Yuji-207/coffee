@@ -1,3 +1,7 @@
+# TODO: post・getの順番を入れ替える
+# TODO: 複数形を_listに統一する
+
+
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
@@ -40,16 +44,44 @@ def read_user(user_id: int, db: Session=Depends(get_db)):
     return db_user
 
 
+@app.post('/beans_list/', response_model=schemas.Beans)
+def create_beans(beans: schemas.BeansCreate, db: Session=Depends(get_db)):
+    return crud.create_beans(db=db, beans=beans)
+
+
+@app.get('/beans_list/', response_model=list[schemas.Beans])
+def read_beans_list(skip: int=0, limit: int=100, db: Session=Depends(get_db)):
+    beans_list = crud.get_beans_list(db, skip=skip, limit=limit)
+    return beans_list
+
+
+@app.get('/beans_list/{beans_id}', response_model=schemas.Beans)
+def read_beans(beans_id: int, db: Session=Depends(get_db)):
+    db_beans = crud.get_beans(db, id=beans_id)
+    if db_beans is None:
+        raise HTTPException(status_code=404, detail='Beans not found')
+    return db_beans
+
+
 @app.post('/users/{user_id}/recipes/', response_model=schemas.Recipe)
 def create_recipe(
         user_id: int,
+        beans_id: int,
         recipe: schemas.RecipeCreate,
         db: Session=Depends(get_db),
     ):
     db_user = crud.get_user(db, id=user_id)
     if db_user is None:
         raise HTTPException(status_code=400, detail='User not found')
-    return crud.create_recipe(db=db, recipe=recipe, user_id=user_id)
+    db_beans = crud.get_beans(db, id=beans_id)
+    if db_beans is None:
+        raise HTTPException(status_code=400, detail='Beans not found')
+    return crud.create_recipe(
+        db=db,
+        recipe=recipe,
+        beans_id=beans_id,
+        user_id=user_id
+    )
 
 
 @app.get('/recipes/', response_model=list[schemas.Recipe])
