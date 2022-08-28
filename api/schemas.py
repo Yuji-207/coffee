@@ -1,3 +1,8 @@
+# TODO: BaseClassを廃止
+# TODO: RecipeなどをRecipeReadなどに変更
+# TODO: RecipeCreateにもbeans_id・user_idを追加することを検討
+
+
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -13,7 +18,24 @@ class RecipeCreate(RecipeBase):
 
 class Recipe(RecipeBase):
     id: int
+    beans_id: int
     user_id: int
+    created: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class BeansBase(BaseModel):
+    name: str
+
+
+class BeansCreate(BeansBase):
+    pass
+
+
+class Beans(BeansBase):
+    id: int
     created: datetime
 
     class Config:
