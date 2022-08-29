@@ -10,6 +10,7 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemText,
   TextField,
   Typography,
 } from '@mui/material';
@@ -59,7 +60,7 @@ export default function Beans() {
       <Container sx={{py: 2}} fixed>
         {modalOpen ? (
           <>
-            <Typography variant="h6">豆の情報を入力してください</Typography>
+            <Typography variant="subtitle1">豆の情報を入力してください</Typography>
             <TextField
               label="豆の名前"
               variant="outlined"
@@ -76,7 +77,7 @@ export default function Beans() {
                 )}
                 <ListItem key={i} disablePadding>
                   <ListItemButton component="a" href="#simple-list">
-                    <Typography variant="subtitle1">{item.name}</Typography>
+                    <ListItemText primary={item.name} />
                   </ListItemButton>
                 </ListItem>
               </>
