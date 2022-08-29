@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Head from 'next/head'
 
@@ -17,27 +17,49 @@ import {
 
 import BottomBar from '../../sections/BottomBar';
 
-
-const items = [
-  {
-    name: 'キリマンジャロ',
-  },
-  {
-    name: 'マンデリン',
-  },
-  {
-    name: 'モカ・シダモ',
-  },
-];
+const axios = require('axios');
+axios.defaults.baseURL = 'http://127.0.0.1:8000';
 
 
 export default function Beans() {
 
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
 
+  const handleChange = event => {
+    const target = event.target;
+    const newValue = {...newItem};
+    newValue[target.name] = target.value;
+    setNewItem(newValue);
+  };
+  
   const handleClick = () => {
     setModalOpen(!modalOpen);
   }
+
+  useEffect(() => {
+    if (!modalOpen) {
+      axios.get('/beans_list')
+        .then(response => {
+          setItems(response.data);
+        })
+        .catch(error => {
+          console.log({error});
+        });
+    }
+  }, [modalOpen])
+
+  const handleSave = () => {
+    axios.post('/beans_list', newItem)
+      .then(response => {
+        setModalOpen(false);
+      })
+      .catch(error => {
+        console.log({error});
+      });
+  };
+
   return (
     <>
       <Head>
@@ -62,11 +84,15 @@ export default function Beans() {
           <>
             <Typography variant="subtitle1">豆の情報を入力してください</Typography>
             <TextField
+              name="name"
               label="豆の名前"
               variant="outlined"
               sx={{minWidth: 1, my: 3}}
+              onChange={handleChange}
             />
-            <Button variant="contained" fullWidth>決定</Button>
+            <Button variant="contained" onClick={handleSave} fullWidth>
+              保存
+            </Button>
           </>
         ) : (
           <List disablePadding>
