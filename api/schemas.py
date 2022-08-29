@@ -8,6 +8,27 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
+
+class EvaluationBase(BaseModel):
+    taste: int
+    strength: int
+
+
+class EvaluationCreate(EvaluationBase):
+    pass
+
+
+class Evaluation(EvaluationBase):
+    id: int
+    user_id: int
+    recipe_id: int
+    created: datetime
+    edited: datetime
+
+    class Config:
+        orm_mode = True
+
+
 class RecipeBase(BaseModel):
     temperature: int
 

@@ -77,3 +77,32 @@ def create_recipe(
     db.commit()
     db.refresh(db_recipe)
     return db_recipe
+
+
+def get_evaluation(db: Session, id: int):
+    return db.query(models.Evaluation).filter(models.Evaluation.id == id).first()
+
+
+def get_evaluations(db: Session, skip: int=0, limit: int=100):
+    return db.query(models.Evaluation).offset(skip).limit(limit).all()
+
+
+def create_evaluation(
+    db: Session,
+    evaluation: schemas.EvaluationCreate,
+    user_id: int,
+    recipe_id: int,
+):
+    created = dt.now()
+    db_evaluation = models.Evaluation(
+        user_id=user_id,
+        recipe_id=recipe_id,
+        taste=evaluation.taste,
+        strength=evaluation.strength,
+        created=created,
+        edited=created,
+    )
+    db.add(db_evaluation)
+    db.commit()
+    db.refresh(db_evaluation)
+    return db_evaluation
