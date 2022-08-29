@@ -5,13 +5,18 @@ import Head from 'next/head'
 import {
   Container,
   CssBaseline,
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Typography,
 } from '@mui/material';
 
 import BottomBar from '../sections/BottomBar';
-import CardList from '../sections/CardList';
 
 
-const evaluations = [
+const items = [
   {
     beans: 'キリマンジャロ',
     temperature: 92,
@@ -61,9 +66,31 @@ export default function Home() {
       <CssBaseline />
       <Container sx={{py: 2}} fixed>
         {modalOpen ? (
-          <CardList evaluations={evaluations} />
+          <></>
         ) : (
-          <CardList evaluations={evaluations} />
+          <List disablePadding>
+          {items.map((item, i) => (
+            <>
+              {i > 0 && (
+                <Divider component="li" />
+              )}
+              <ListItem key={i} disablePadding>
+                <ListItemButton component="a" href="#simple-list">
+                  <ListItemText
+                    primary={item.beans}
+                    secondary={
+                      <>
+                        <Typography>温度：{item.temperature} ℃</Typography>
+                        <Typography>味わい：{item.taste}</Typography>
+                        <Typography>濃さ：{item.strength}</Typography>
+                      </>
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+            </>
+          ))}
+        </List>
         )}
       </Container>
       <BottomBar open={modalOpen} onClick={handleClick} />
