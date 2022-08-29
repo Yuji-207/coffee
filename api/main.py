@@ -96,3 +96,38 @@ def read_recipe(recipe_id: int, db: Session=Depends(get_db)):
     if db_recipe is None:
         raise HTTPException(status_code=404, detail='Recipe not found')
     return db_recipe
+
+
+@app.post('/evaluations/', response_model=schemas.Evaluation)
+def create_evaluation(
+    evaluation: schemas.EvaluationCreate,
+    user_id: int,
+    recipe_id: int,
+    db: Session=Depends(get_db),
+):
+    db_user = crud.get_user(db, id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=400, detail='User not found')
+    db_recipe = crud.get_recipe(db, id=recipe_id)
+    if db_recipe is None:
+        raise HTTPException(status_code=400, detail='Recipe not found')
+    return crud.create_evaluation(
+        db=db,
+        evaluation=evaluation,
+        user_id=user_id,
+        recipe_id=recipe_id,
+    )
+
+
+@app.get('/evaluations/', response_model=list[schemas.Evaluation])
+def read_evaluations(skip: int=0, limit: int=100, db: Session=Depends(get_db)):
+    evaluations = crud.get_evaluations(db, skip=skip, limit=limit)
+    return evaluations
+
+
+@app.get('/evaluations/{evaluation_id}', response_model=schemas.Evaluation)
+def read_evaluation(evaluation_id: int, db: Session=Depends(get_db)):
+    db_evaluation = crud.get_evaluation(db, id=evaluation_id)
+    if db_evaluation is None:
+        raise HTTPException(status_code=404, detail='Evaluation not found')
+    return db_evaluation

@@ -15,6 +15,7 @@ class User(Base):
     edited = Column(DateTime)
 
     recipes = relationship('Recipe', back_populates='creator')
+    evaluations = relationship('Evaluation', back_populates='user')
 
 
 class Beans(Base):
@@ -38,3 +39,19 @@ class Recipe(Base):
 
     beans = relationship('Beans', back_populates='recipes')
     creator = relationship('User', back_populates='recipes')
+    evaluations = relationship('Evaluation', back_populates='recipe')
+
+
+class Evaluation(Base):
+    __tablename__ = 'evaluations'
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    recipe_id = Column(Integer, ForeignKey('recipes.id'))
+    taste = Column(Integer)
+    strength = Column(Integer)
+    created = Column(DateTime)
+    edited = Column(DateTime)
+
+    user = relationship('User', back_populates='evaluations')
+    recipe = relationship('Recipe', back_populates='evaluations')
