@@ -97,7 +97,7 @@ export default function Beans() {
         ) : (
           <List disablePadding>
             {items.map((item, i) => (
-              <>
+              <Fragment key={i} >
                 {i > 0 && (
                   <Divider component="li" />
                 )}
@@ -106,7 +106,7 @@ export default function Beans() {
                     <ListItemText primary={item.name} />
                   </ListItemButton>
                 </ListItem>
-              </>
+              </Fragment>
             ))}
           </List>
         )}
