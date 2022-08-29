@@ -5,6 +5,8 @@ import {
   CssBaseline,
 } from '@mui/material';
 
+import BottomBar from '../sections/BottomBar';
+
 
 export default function Home() {
   return (
@@ -29,6 +31,7 @@ export default function Home() {
       <Container>
         hoge
       </Container>
+      <BottomBar />
     </>
   )
 }
