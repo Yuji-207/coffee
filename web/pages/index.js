@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import Head from 'next/head'
 
-import { 
+import {
   Container,
   CssBaseline,
 } from '@mui/material';
@@ -40,7 +40,6 @@ export default function Home() {
   const handleClick = () => {
     setModalOpen(!modalOpen);
   }
-console.log(modalOpen)
   return (
     <>
       <Head>
