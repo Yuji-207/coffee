@@ -63,7 +63,7 @@ def read_beans(beans_id: int, db: Session=Depends(get_db)):
     return db_beans
 
 
-@app.post('/users/{user_id}/recipes/', response_model=schemas.Recipe)
+@app.post('/recipes/', response_model=schemas.Recipe)
 def create_recipe(
         user_id: int,
         beans_id: int,
