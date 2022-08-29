@@ -6,6 +6,29 @@ import {
 } from '@mui/material';
 
 import BottomBar from '../sections/BottomBar';
+import CardList from '../sections/CardList';
+
+
+const evaluations = [
+  {
+    beans: 'キリマンジャロ',
+    temperature: 92,
+    taste: 3,
+    strength: 3,
+  },
+  {
+    beans: 'マンデリン',
+    temperature: 88,
+    taste: 5,
+    strength: 5,
+  },
+  {
+    beans: 'モカ・シダモ',
+    temperature: 94,
+    taste: 2,
+    strength: 2,
+  },
+];
 
 
 export default function Home() {
@@ -28,8 +51,8 @@ export default function Home() {
         />
       </Head>
       <CssBaseline />
-      <Container>
-        hoge
+      <Container sx={{py: 2}} fixed>
+        <CardList evaluations={evaluations} />
       </Container>
       <BottomBar />
     </>
