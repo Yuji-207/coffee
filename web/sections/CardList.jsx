@@ -8,15 +8,13 @@ import {
 } from '@mui/material';
 
 
-export default function CardList({
-  evaluations,
-}) {
+export default function CardList({ evaluations }) {
   return (
     <List disablePadding>
       {evaluations.map((evaluation, i) => (
-        <ListItem disablePadding>
+        <ListItem key={i} disablePadding>
           <ListItemButton component="a" href="#simple-list">
-            <Card key={i} sx={{minWidth: 1}}>
+            <Card sx={{minWidth: 1}}>
               <CardContent>
                 <Typography variant="h6">{evaluation.beans}</Typography>
                 <Typography>温度：{evaluation.temperature} ℃</Typography>
