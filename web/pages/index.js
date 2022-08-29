@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import Head from 'next/head'
 
 import { 
@@ -32,6 +34,13 @@ const evaluations = [
 
 
 export default function Home() {
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleClick = () => {
+    setModalOpen(!modalOpen);
+  }
+console.log(modalOpen)
   return (
     <>
       <Head>
@@ -52,9 +61,13 @@ export default function Home() {
       </Head>
       <CssBaseline />
       <Container sx={{py: 2}} fixed>
-        <CardList evaluations={evaluations} />
+        {modalOpen ? (
+          <CardList evaluations={evaluations} />
+        ) : (
+          <CardList evaluations={evaluations} />
+        )}
       </Container>
-      <BottomBar />
+      <BottomBar open={modalOpen} onClick={handleClick} />
     </>
   )
 }

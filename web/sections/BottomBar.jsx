@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 
 import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreIcon from '@mui/icons-material/More';
 import SearchIcon from '@mui/icons-material/Search';
@@ -24,15 +25,19 @@ const StyledFab = styled(Fab)({
 });
 
 
-export default function BottomBar() {
+export default function BottomBar({ open, onClick }) {
   return (
     <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
     <Toolbar>
       <IconButton color="inherit" aria-label="open drawer">
         <MenuIcon />
       </IconButton>
-      <StyledFab color="secondary" aria-label="add">
-        <AddIcon />
+      <StyledFab color="secondary" aria-label="add" onClick={onClick}>
+        {open ? (
+          <CloseIcon />
+        ) : (
+          <AddIcon />
+        )}
       </StyledFab>
       <Box sx={{ flexGrow: 1 }} />
       <IconButton color="inherit">
