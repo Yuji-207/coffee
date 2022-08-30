@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import Head from 'next/head'
 
@@ -70,11 +70,11 @@ export default function Home() {
         ) : (
           <List disablePadding>
           {items.map((item, i) => (
-            <>
+            <Fragment key={i} >
               {i > 0 && (
                 <Divider component="li" />
               )}
-              <ListItem key={i} disablePadding>
+              <ListItem disablePadding>
                 <ListItemButton component="a" href="#simple-list">
                   <ListItemText
                     primary={item.beans}
@@ -88,7 +88,7 @@ export default function Home() {
                   />
                 </ListItemButton>
               </ListItem>
-            </>
+            </Fragment>
           ))}
         </List>
         )}
