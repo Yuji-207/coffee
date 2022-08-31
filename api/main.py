@@ -1,6 +1,7 @@
 # TODO: post・getの順番を入れ替える
 # TODO: 複数形を_listに統一する
 # TODO: パスパラメータのみuser -> idなどにする
+# TODO: db_userをuserなどに変更
 
 
 from fastapi import Depends, FastAPI, HTTPException
@@ -60,6 +61,10 @@ def read_user(user_id: int, db: Session=Depends(get_db)):
 
 @app.get('/users/{user_id}/distributions', response_model=schemas.Distribution)
 def read_user_distributions(user_id: int, db: Session=Depends(get_db)):
+
+    db_user = crud.get_user(db, id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=400, detail='User not found')
 
     # user-recipes prior distributions
     taste = bayse.create_prior()
