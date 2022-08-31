@@ -25,11 +25,11 @@ const axios = require('axios');
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 
 
-export default function Recipes() {
+export default function Evaluations() {
 
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState({user_id: 1});
-  const [beansList, setBeansList] = useState([]);
+  const [recipes, setRecipes] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleChange = event => {
@@ -43,24 +43,34 @@ export default function Recipes() {
     setModalOpen(!modalOpen);
   }
 
+  console.log({items})
   useEffect(() => {
     if (!modalOpen) {
 
-      axios.get('/recipes')
-        .then(recipesResponse => {
-          const tmp = recipesResponse.data;
+      axios.get('/evaluations')
+        .then(evaluationsResponse => {
+          const tmp = evaluationsResponse.data;
           for (let i = 0; i < tmp.length; i++) {
 
-            axios.get('/beans_list/' + tmp[i].beans_id)
-            .then(beansListResponse => {
-              tmp[i]['beans'] = beansListResponse.data;
-            })
-            .catch(error => {
-              console.log({error});
-            })
-            .finally(() => {
-              setItems(JSON.parse(JSON.stringify(tmp)));
-            });
+            axios.get('/recipes/' + tmp[i].recipe_id)
+              .then(recipeResponse => {
+                tmp[i]['recipe'] = recipeResponse.data;
+
+                axios.get('/beans_list/' + tmp[i].recipe.beans_id)
+                  .then(beansResponse => {
+                    tmp[i]['recipe']['beans'] = beansResponse.data;
+                  })
+                  .catch(error => {
+                    console.log({error});
+                  })
+                  .finally(() => {
+                    setItems(JSON.parse(JSON.stringify(tmp)));
+                  });
+
+              })
+              .catch(error => {
+                console.log({error});
+              });
 
           }
         })
@@ -70,19 +80,33 @@ export default function Recipes() {
 
     } else {
 
-      axios.get('/beans_list')
-      .then(response => {
-        setBeansList(response.data);
-      })
-      .catch(error => {
-        console.log({error});
-      });
+      axios.get('/recipes')
+        .then(recipesResponse => {
+          const tmp = recipesResponse.data;
+          for (let i = 0; i < tmp.length; i++) {
+
+            axios.get('/beans_list/' + tmp[i].beans_id)
+              .then(beansResponse => {
+                tmp[i]['beans'] = beansResponse.data;
+              })
+              .catch(error => {
+                console.log({error});
+              })
+              .finally(() => {
+                setRecipes(JSON.parse(JSON.stringify(tmp)));
+              });
+
+          }
+        })
+        .catch(error => {
+          console.log({error});
+        });
 
     }
   }, [modalOpen]);
 
   const handleSave = () => {
-    axios.post(`/recipes?user_id=${newItem.user_id}&beans_id=${newItem.beans_id}`, newItem)
+    axios.post(`/evaluations?user_id=${newItem.user_id}&recipe_id=${newItem.recipe_id}`, newItem)
       .then(response => {
         setModalOpen(false);
       })
@@ -113,35 +137,45 @@ export default function Recipes() {
       <Container sx={{py: 2}} fixed>
         {modalOpen ? (
           <>
-            <Typography variant="subtitle1">レシピを入力してください</Typography>
+            <Typography variant="subtitle1">レシピを評価してください</Typography>
             <FormControl fullWidth>
-              <InputLabel id="select-label" sx={{my: 2}}>豆の名前</InputLabel>
+              <InputLabel id="select-label" sx={{my: 2}}>レシピ</InputLabel>
               <Select
                 labelId="select-label"
-                label="豆の名前"
-                name="beans_id"
+                label="レシピ"
+                name="recipe_id"
                 onChange={handleChange}
                 sx={{my: 2}}
               >
-                {beansList.map(beans => (
-                  <MenuItem key={beans.id} value={beans.id}>
-                    {beans.name}
+                {recipes.map(recipe => (
+                  <MenuItem key={recipe.id} value={recipe.id}>
+                    {recipe.beans !== undefined && (
+                      `${recipe.beans.name}：${recipe.temperature} ℃`
+                    )}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
             <TextField
-              name="temperature"
-              label="湯温（℃）"
+              name="taste"
+              label="酸味（1） - 苦味（5）"
               type="number"
               variant="outlined"
-              sx={{minWidth: 1, my: 3}}
+              sx={{minWidth: 1, my: 2}}
+              onChange={handleChange}
+            />
+            <TextField
+              name="strength"
+              label="濃度（1 - 5）"
+              type="number"
+              variant="outlined"
+              sx={{minWidth: 1, my: 2}}
               onChange={handleChange}
             />
             <Button
               variant="contained"
               onClick={handleSave}
-              sx={{my: 2}}
+              sx={{my: 3}}
               fullWidth
             >
               保存
@@ -157,9 +191,17 @@ export default function Recipes() {
                 <ListItem key={i} disablePadding>
                   <ListItemButton component="a" href="#simple-list">
                     <ListItemText
-                      primary={item.beans !== undefined && item.beans.name}
+                      primary={item.recipe.beans !== undefined && item.recipe.beans.name}
                       secondary={
-                        <Typography>温度：{item.temperature} ℃</Typography>
+                        <>
+                          <Typography>
+                            温度：{item.recipe !== undefined && (
+                              item.recipe.temperature
+                             )} ℃
+                            </Typography>
+                          <Typography>味わい：{item.taste}</Typography>
+                          <Typography>濃さ：{item.strength}</Typography>
+                        </>
                       }
                     />
                   </ListItemButton>
