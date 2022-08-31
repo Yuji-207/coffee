@@ -25,14 +25,18 @@ const StyledFab = styled(Fab)({
 });
 
 
-export default function BottomBar({ open, onClick }) {
+export default function BottomBar({ open, onMainClick, onMenuClick }) {
   return (
     <AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
     <Toolbar>
-      <IconButton color="inherit" aria-label="open drawer">
+      <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        onClick={onMenuClick}
+      >
         <MenuIcon />
       </IconButton>
-      <StyledFab color="secondary" aria-label="add" onClick={onClick}>
+      <StyledFab color="secondary" aria-label="add" onClick={onMainClick}>
         {open ? (
           <CloseIcon />
         ) : (
