@@ -22,8 +22,8 @@ def create_posteriors(posterior):
     """
     Create splited distributions from a 3-D posterior distribution.
     """
-    user = posterior.sum(axis=1).sum(axis=-1).reshape(-1, 1)
-    recipe = posterior.sum(axis=0).sum(axis=-1).reshape(1, -1)
+    user = posterior.sum(axis=1).sum(axis=-1)
+    recipe = posterior.sum(axis=0).sum(axis=-1)
     return user, recipe
 
 

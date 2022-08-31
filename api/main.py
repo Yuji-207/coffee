@@ -77,7 +77,7 @@ def read_user_distributions(user_id: int, db: Session=Depends(get_db)):
 
     taste, _ = bayse.create_posteriors(taste)
     strength, _ = bayse.create_posteriors(strength)
-
+    
     distributions = {
         'taste': list(taste),
         'strength': list(strength),
@@ -138,10 +138,11 @@ def read_recipe_distributions(db: Session=Depends(get_db)):
     # user-recipes prior distributions
     taste = bayse.create_prior()
     strength = bayse.create_prior()
+    conditional = bayse.create_condional()
 
     for evaluation in crud.get_evaluations(db):  # TODO: by_user=user_id
-        taste = bayse.update(taste, evaluation.taste)
-        strength = bayse.update(strength, evaluation.strength)
+        taste = bayse.update(taste, conditional, evaluation.taste)
+        strength = bayse.update(strength, conditional, evaluation.strength)
 
     _, taste = bayse.create_posteriors(taste)
     _, strength = bayse.create_posteriors(strength)
@@ -149,7 +150,7 @@ def read_recipe_distributions(db: Session=Depends(get_db)):
     distributions = {
         'taste': list(taste),
         'strength': list(strength),
-    },
+    }
 
     return distributions
 
