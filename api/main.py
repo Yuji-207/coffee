@@ -66,20 +66,21 @@ def read_user_distributions(user_id: int, db: Session=Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=400, detail='User not found')
 
-    # user-recipes prior distributions
+    # user-recipes distributions and probabilities.
     taste = bayse.create_prior()
     strength = bayse.create_prior()
+    conditional = bayse.create_condional()
 
     for evaluation in crud.get_evaluations(db):  # TODO: by_user=user_id
-        taste = bayse.update(taste, evaluation.taste)
-        strength = bayse.update(strength, evaluation.strength)
+        taste = bayse.update(taste, conditional, evaluation.taste)
+        strength = bayse.update(strength, conditional, evaluation.strength)
 
     taste, _ = bayse.create_posteriors(taste)
     strength, _ = bayse.create_posteriors(strength)
 
     distributions = {
-        'taste': taste,
-        'strength': strength
+        'taste': list(taste),
+        'strength': list(strength),
     }
 
     return distributions
@@ -146,8 +147,8 @@ def read_recipe_distributions(db: Session=Depends(get_db)):
     _, strength = bayse.create_posteriors(strength)
 
     distributions = {
-        'taste': taste,
-        'strength': strength
+        'taste': list(taste),
+        'strength': list(strength),
     },
 
     return distributions
