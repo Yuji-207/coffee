@@ -8,6 +8,10 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
+class Distribution(BaseModel):
+    taste: list[float]
+    strength: list[float]
+
 
 class EvaluationBase(BaseModel):
     taste: int

@@ -1,12 +1,14 @@
 # TODO: post・getの順番を入れ替える
 # TODO: 複数形を_listに統一する
+# TODO: パスパラメータのみuser -> idなどにする
+# TODO: db_userをuserなどに変更
 
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from . import crud, models, schemas
+from . import crud, models, schemas, bayse
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -57,6 +59,33 @@ def read_user(user_id: int, db: Session=Depends(get_db)):
     return db_user
 
 
+@app.get('/users/{user_id}/distributions', response_model=schemas.Distribution)
+def read_user_distributions(user_id: int, db: Session=Depends(get_db)):
+
+    db_user = crud.get_user(db, id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=400, detail='User not found')
+
+    # user-recipes distributions and probabilities.
+    taste = bayse.create_prior()
+    strength = bayse.create_prior()
+    conditional = bayse.create_condional()
+
+    for evaluation in crud.get_evaluations(db):  # TODO: by_user=user_id
+        taste = bayse.update(taste, conditional, evaluation.taste)
+        strength = bayse.update(strength, conditional, evaluation.strength)
+
+    taste, _ = bayse.create_posteriors(taste)
+    strength, _ = bayse.create_posteriors(strength)
+    
+    distributions = {
+        'taste': list(taste),
+        'strength': list(strength),
+    }
+
+    return distributions
+
+
 @app.post('/beans_list', response_model=schemas.Beans)
 def create_beans(beans: schemas.BeansCreate, db: Session=Depends(get_db)):
     return crud.create_beans(db=db, beans=beans)
@@ -101,6 +130,29 @@ def create_recipe(
 def read_recipes(skip: int=0, limit: int=100, db: Session=Depends(get_db)):
     recipes = crud.get_recipes(db, skip=skip, limit=limit)
     return recipes
+
+
+@app.get('/recipes/distributions', response_model=schemas.Distribution)
+def read_recipe_distributions(db: Session=Depends(get_db)):
+
+    # user-recipes prior distributions
+    taste = bayse.create_prior()
+    strength = bayse.create_prior()
+    conditional = bayse.create_condional()
+
+    for evaluation in crud.get_evaluations(db):  # TODO: by_user=user_id
+        taste = bayse.update(taste, conditional, evaluation.taste)
+        strength = bayse.update(strength, conditional, evaluation.strength)
+
+    _, taste = bayse.create_posteriors(taste)
+    _, strength = bayse.create_posteriors(strength)
+
+    distributions = {
+        'taste': list(taste),
+        'strength': list(strength),
+    }
+
+    return distributions
 
 
 @app.get('/recipes/{recipe_id}', response_model=schemas.Recipe)
