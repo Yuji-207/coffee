@@ -22,9 +22,9 @@ def create_posteriors(posterior):
     """
     Create splited distributions from a 2-D posterior distribution.
     """
-    person = posterior.sum(axis=1).reshape(-1, 1)
+    user = posterior.sum(axis=1).reshape(-1, 1)
     recipe = posterior.sum(axis=0).reshape(1, -1)
-    return person, recipe
+    return user, recipe
 
 
 def create_condional():
