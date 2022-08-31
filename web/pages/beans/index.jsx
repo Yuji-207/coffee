@@ -87,10 +87,15 @@ export default function Beans() {
               name="name"
               label="豆の名前"
               variant="outlined"
-              sx={{minWidth: 1, my: 3}}
+              sx={{minWidth: 1, my: 2}}
               onChange={handleChange}
             />
-            <Button variant="contained" onClick={handleSave} fullWidth>
+            <Button
+              variant="contained"
+              onClick={handleSave}
+              sx={{my: 3}}
+              fullWidth
+            >
               保存
             </Button>
           </>

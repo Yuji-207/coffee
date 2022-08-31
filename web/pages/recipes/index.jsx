@@ -3,7 +3,6 @@ import { Fragment, useEffect, useState } from 'react';
 import Head from 'next/head'
 
 import {
-  Box,
   Button,
   Container,
   CssBaseline,
@@ -24,11 +23,6 @@ import BottomBar from '../../sections/BottomBar';
 
 const axios = require('axios');
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
-
-
-// initNewItem = {
-
-// };
 
 
 export default function Recipes() {
@@ -56,6 +50,7 @@ export default function Recipes() {
         .then(recipesResponse => {
           const tmp = recipesResponse.data;
           for (let i = 0; i < tmp.length; i++) {
+
             axios.get('/beans_list/' + tmp[i].beans_id)
             .then(beansListResponse => {
               tmp[i]['beans'] = beansListResponse.data;
@@ -66,6 +61,7 @@ export default function Recipes() {
             .finally(() => {
               setItems(JSON.parse(JSON.stringify(tmp)));
             });
+
           }
         })
         .catch(error => {
@@ -119,12 +115,13 @@ export default function Recipes() {
           <>
             <Typography variant="subtitle1">レシピを入力してください</Typography>
             <FormControl fullWidth>
-              <InputLabel id="select-label">豆の名前</InputLabel>
+              <InputLabel id="select-label" sx={{my: 2}}>豆の名前</InputLabel>
               <Select
                 labelId="select-label"
                 label="豆の名前"
                 name="beans_id"
                 onChange={handleChange}
+                sx={{my: 2}}
               >
                 {beansList.map(beans => (
                   <MenuItem key={beans.id} value={beans.id}>
@@ -141,7 +138,12 @@ export default function Recipes() {
               sx={{minWidth: 1, my: 3}}
               onChange={handleChange}
             />
-            <Button variant="contained" onClick={handleSave} fullWidth>
+            <Button
+              variant="contained"
+              onClick={handleSave}
+              sx={{my: 2}}
+              fullWidth
+            >
               保存
             </Button>
           </>
@@ -155,7 +157,7 @@ export default function Recipes() {
                 <ListItem key={i} disablePadding>
                   <ListItemButton component="a" href="#simple-list">
                     <ListItemText
-                      primary={item.beans !== undefined ? item.beans.name : "hoge"}
+                      primary={item.beans !== undefined && item.beans.name}
                       secondary={
                         <Typography>温度：{item.temperature} ℃</Typography>
                       }
