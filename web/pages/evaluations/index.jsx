@@ -19,10 +19,25 @@ import {
   Typography,
 } from '@mui/material';
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { brown, cyan } from '@mui/material/colors';
+
 import BottomBar from '../../sections/BottomBar';
 
 const axios = require('axios');
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
+
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: brown[500],
+    },
+    secondary: {
+      main: cyan[200],
+    },
+  },
+});
 
 
 export default function Evaluations() {
@@ -133,86 +148,88 @@ export default function Evaluations() {
         />
       </Head>
       <CssBaseline />
-      <Container sx={{py: 2}} fixed>
-        {modalOpen ? (
-          <>
-            <Typography variant="subtitle1">レシピを評価してください</Typography>
-            <FormControl fullWidth>
-              <InputLabel id="select-label" sx={{my: 2}}>レシピ</InputLabel>
-              <Select
-                labelId="select-label"
-                label="レシピ"
-                name="recipe_id"
-                onChange={handleChange}
-                sx={{my: 2}}
-              >
-                {recipes.map(recipe => (
-                  <MenuItem key={recipe.id} value={recipe.id}>
-                    {recipe.beans !== undefined && (
-                      `${recipe.beans.name}：${recipe.temperature} ℃`
-                    )}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              name="taste"
-              label="酸味（1） - 苦味（5）"
-              type="number"
-              variant="outlined"
-              sx={{minWidth: 1, my: 2}}
-              onChange={handleChange}
-            />
-            <TextField
-              name="strength"
-              label="濃度（1 - 5）"
-              type="number"
-              variant="outlined"
-              sx={{minWidth: 1, my: 2}}
-              onChange={handleChange}
-            />
-            <Button
-              variant="contained"
-              onClick={handleSave}
-              sx={{my: 3}}
-              fullWidth
-            >
-              保存
-            </Button>
-          </>
-        ) : (
-          <List disablePadding>
-            {items.map((item, i) => (
-              <Fragment key={item.id} >
-                {i > 0 && (
-                  <Divider component="li" />
-                )}
-                <ListItem key={i} disablePadding>
-                  <ListItemButton component="a" href="#simple-list">
-                    <ListItemText
-                      primary={item.recipe.beans !== undefined && (
-                        item.recipe.beans.name
+      <ThemeProvider theme={theme}>
+        <Container sx={{py: 2}} fixed>
+          {modalOpen ? (
+            <>
+              <Typography variant="subtitle1">レシピを評価してください</Typography>
+              <FormControl fullWidth>
+                <InputLabel id="select-label" sx={{my: 2}}>レシピ</InputLabel>
+                <Select
+                  labelId="select-label"
+                  label="レシピ"
+                  name="recipe_id"
+                  onChange={handleChange}
+                  sx={{my: 2}}
+                >
+                  {recipes.map(recipe => (
+                    <MenuItem key={recipe.id} value={recipe.id}>
+                      {recipe.beans !== undefined && (
+                        `${recipe.beans.name}：${recipe.temperature} ℃`
                       )}
-                      secondary={
-                        <>
-                          <Typography>
-                            温度：{item.recipe !== undefined && (
-                              item.recipe.temperature
-                            )} ℃
-                          </Typography>
-                          <Typography>味わい：{item.taste}</Typography>
-                          <Typography>濃さ：{item.strength}</Typography>
-                        </>
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              </Fragment>
-            ))}
-          </List>
-        )}
-      </Container>
-      <BottomBar open={modalOpen} onClick={handleClick} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                name="taste"
+                label="酸味（1） - 苦味（5）"
+                type="number"
+                variant="outlined"
+                sx={{minWidth: 1, my: 2}}
+                onChange={handleChange}
+              />
+              <TextField
+                name="strength"
+                label="濃度（1 - 5）"
+                type="number"
+                variant="outlined"
+                sx={{minWidth: 1, my: 2}}
+                onChange={handleChange}
+              />
+              <Button
+                variant="contained"
+                onClick={handleSave}
+                sx={{my: 3}}
+                fullWidth
+              >
+                保存
+              </Button>
+            </>
+          ) : (
+            <List disablePadding>
+              {items.map((item, i) => (
+                <Fragment key={item.id} >
+                  {i > 0 && (
+                    <Divider component="li" />
+                  )}
+                  <ListItem key={i} disablePadding>
+                    <ListItemButton component="a" href="#simple-list">
+                      <ListItemText
+                        primary={item.recipe.beans !== undefined && (
+                          item.recipe.beans.name
+                        )}
+                        secondary={
+                          <>
+                            <Typography>
+                              温度：{item.recipe !== undefined && (
+                                item.recipe.temperature
+                              )} ℃
+                            </Typography>
+                            <Typography>味わい：{item.taste}</Typography>
+                            <Typography>濃さ：{item.strength}</Typography>
+                          </>
+                        }
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                </Fragment>
+              ))}
+            </List>
+          )}
+        </Container>
+        <BottomBar open={modalOpen} onClick={handleClick} />
+      </ThemeProvider>
     </>
   )
 }

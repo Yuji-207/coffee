@@ -15,10 +15,25 @@ import {
   Typography,
 } from '@mui/material';
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { brown, cyan } from '@mui/material/colors';
+
 import BottomBar from '../../sections/BottomBar';
 
 const axios = require('axios');
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
+
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: brown[500],
+    },
+    secondary: {
+      main: cyan[200],
+    },
+  },
+});
 
 
 export default function Beans() {
@@ -79,44 +94,48 @@ export default function Beans() {
         />
       </Head>
       <CssBaseline />
-      <Container sx={{py: 2}} fixed>
-        {modalOpen ? (
-          <>
-            <Typography variant="subtitle1">豆の情報を入力してください</Typography>
-            <TextField
-              name="name"
-              label="豆の名前"
-              variant="outlined"
-              sx={{minWidth: 1, my: 2}}
-              onChange={handleChange}
-            />
-            <Button
-              variant="contained"
-              onClick={handleSave}
-              sx={{my: 3}}
-              fullWidth
-            >
-              保存
-            </Button>
-          </>
-        ) : (
-          <List disablePadding>
-            {items.map((item, i) => (
-              <Fragment key={i} >
-                {i > 0 && (
-                  <Divider component="li" />
-                )}
-                <ListItem key={i} disablePadding>
-                  <ListItemButton component="a" href="#simple-list">
-                    <ListItemText primary={item.name} />
-                  </ListItemButton>
-                </ListItem>
-              </Fragment>
-            ))}
-          </List>
-        )}
-      </Container>
-      <BottomBar open={modalOpen} onClick={handleClick} />
+      <ThemeProvider theme={theme}>
+        <Container sx={{py: 2}} fixed>
+          {modalOpen ? (
+            <>
+              <Typography variant="subtitle1">
+                豆の情報を入力してください
+              </Typography>
+              <TextField
+                name="name"
+                label="豆の名前"
+                variant="outlined"
+                sx={{minWidth: 1, my: 2}}
+                onChange={handleChange}
+              />
+              <Button
+                variant="contained"
+                onClick={handleSave}
+                sx={{my: 3}}
+                fullWidth
+              >
+                保存
+              </Button>
+            </>
+          ) : (
+            <List disablePadding>
+              {items.map((item, i) => (
+                <Fragment key={i} >
+                  {i > 0 && (
+                    <Divider component="li" />
+                  )}
+                  <ListItem key={i} disablePadding>
+                    <ListItemButton component="a" href="#simple-list">
+                      <ListItemText primary={item.name} />
+                    </ListItemButton>
+                  </ListItem>
+                </Fragment>
+              ))}
+            </List>
+          )}
+        </Container>
+        <BottomBar open={modalOpen} onClick={handleClick} />
+      </ThemeProvider>
     </>
   )
 }

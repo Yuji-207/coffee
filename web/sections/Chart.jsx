@@ -12,21 +12,21 @@ const format = data => (
 );
 
 
-export default function Chart({ data, margin, aspect=2.4}) {
+export default function Chart({ data, margin, color, aspect=2.4}) {
   data = format(data);
   return (
     <ResponsiveContainer aspect={aspect}>
       <AreaChart data={data} margin={margin} >
         <defs>
           <linearGradient id="colorP" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#00838f" stopOpacity={0.8}/>
-            <stop offset="95%" stopColor="#00838f" stopOpacity={0}/>
+            <stop offset="5%" stopColor={color} stopOpacity={0.8}/>
+            <stop offset="95%" stopColor={color} stopOpacity={0}/>
           </linearGradient>
         </defs>
         <Area
           type="monotone"
           dataKey="propability"
-          stroke="#00838f"
+          stroke={color}
           fill="url(#colorP)"
         />
       </AreaChart>
