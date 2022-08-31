@@ -19,6 +19,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { brown, cyan } from '@mui/material/colors';
 
 import BottomBar from '../../sections/BottomBar';
+import Drawer from '../../sections/Drawer';
 
 const axios = require('axios');
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
@@ -41,6 +42,7 @@ export default function Beans() {
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleChange = event => {
     const target = event.target;
@@ -48,10 +50,6 @@ export default function Beans() {
     newValue[target.name] = target.value;
     setNewItem(newValue);
   };
-  
-  const handleClick = () => {
-    setModalOpen(!modalOpen);
-  }
 
   useEffect(() => {
     if (!modalOpen) {
@@ -134,7 +132,16 @@ export default function Beans() {
             </List>
           )}
         </Container>
-        <BottomBar open={modalOpen} onClick={handleClick} />
+        <BottomBar
+          open={modalOpen}
+          onMainClick={() => {
+            setModalOpen(!modalOpen);
+          }}
+          onMenuClick={() => {
+            setDrawerOpen(!drawerOpen);
+          }}
+        />
+        <Drawer open={drawerOpen} setOpen={setDrawerOpen} />
       </ThemeProvider>
     </>
   )

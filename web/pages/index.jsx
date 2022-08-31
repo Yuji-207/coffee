@@ -24,6 +24,7 @@ import { brown, cyan } from '@mui/material/colors';
 
 import BottomBar from '../sections/BottomBar';
 import Chart from '../sections/Chart';
+import Drawer from '../sections/Drawer';
 
 const axios = require('axios');
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
@@ -47,6 +48,7 @@ export default function Home() {
   const [newItem, setNewItem] = useState({user_id: 1});
   const [recipes, setRecipes] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleChange = event => {
     const target = event.target;
@@ -54,17 +56,13 @@ export default function Home() {
     newValue[target.name] = Number(target.value);
     setNewItem(newValue);
   };
-  
-  const handleClick = () => {
-    setModalOpen(!modalOpen);
-  }
 
-  useEffect(() => {
+  useEffect(async () => {
     if (!modalOpen) {
 
       let tmp = {};
 
-      axios.get('/users/distributions')
+      await axios.get('/users/distributions')
         .then(res => {
           tmp.usersTaste = {
             name: 'ユーザーの嗜好（酸味・苦味）',
@@ -77,12 +75,9 @@ export default function Home() {
         })
         .catch(error => {
           console.log({error});
-        })
-        .finally(() => {
-          setDistributions(JSON.parse(JSON.stringify(tmp)));
         });
 
-      axios.get('/recipes/distributions')
+      await axios.get('/recipes/distributions')
         .then(res => {
           tmp.recipesTaste = {
             name: 'レシピの傾向（酸味・苦味）',
@@ -238,7 +233,16 @@ export default function Home() {
             </List>
           )}
         </Container>
-        <BottomBar open={modalOpen} onClick={handleClick} />
+        <BottomBar
+          open={modalOpen}
+          onMainClick={() => {
+            setModalOpen(!modalOpen);
+          }}
+          onMenuClick={() => {
+            setDrawerOpen(!drawerOpen);
+          }}
+        />
+        <Drawer open={drawerOpen} setOpen={setDrawerOpen} />
       </ThemeProvider>
     </>
   )

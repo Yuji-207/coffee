@@ -23,6 +23,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { brown, cyan } from '@mui/material/colors';
 
 import BottomBar from '../../sections/BottomBar';
+import Drawer from '../../sections/Drawer';
 
 const axios = require('axios');
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
@@ -46,6 +47,7 @@ export default function Evaluations() {
   const [newItem, setNewItem] = useState({user_id: 1});
   const [recipes, setRecipes] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleChange = event => {
     const target = event.target;
@@ -53,10 +55,6 @@ export default function Evaluations() {
     newValue[target.name] = Number(target.value);
     setNewItem(newValue);
   };
-  
-  const handleClick = () => {
-    setModalOpen(!modalOpen);
-  }
 
   useEffect(() => {
     if (!modalOpen) {
@@ -206,7 +204,7 @@ export default function Evaluations() {
                   <ListItem key={i} disablePadding>
                     <ListItemButton component="a" href="#simple-list">
                       <ListItemText
-                        primary={item.recipe.beans !== undefined && (
+                        primary={item.recipe !== undefined && item.recipe.beans !== undefined && (
                           item.recipe.beans.name
                         )}
                         secondary={
@@ -228,7 +226,16 @@ export default function Evaluations() {
             </List>
           )}
         </Container>
-        <BottomBar open={modalOpen} onClick={handleClick} />
+        <BottomBar
+          open={modalOpen}
+          onMainClick={() => {
+            setModalOpen(!modalOpen);
+          }}
+          onMenuClick={() => {
+            setDrawerOpen(!drawerOpen);
+          }}
+        />
+        <Drawer open={drawerOpen} setOpen={setDrawerOpen} />
       </ThemeProvider>
     </>
   )
