@@ -51,27 +51,15 @@ def read_users(skip: int=0, limit: int=100, db: Session=Depends(get_db)):
     return users
 
 
-@app.get('/users/{user_id}', response_model=schemas.User)
-def read_user(user_id: int, db: Session=Depends(get_db)):
-    db_user = crud.get_user(db, id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail='User not found')
-    return db_user
-
-
-@app.get('/users/{user_id}/distributions', response_model=schemas.Distribution)
-def read_user_distributions(user_id: int, db: Session=Depends(get_db)):
-
-    db_user = crud.get_user(db, id=user_id)
-    if db_user is None:
-        raise HTTPException(status_code=400, detail='User not found')
+@app.get('/users/distributions', response_model=schemas.Distribution)
+def read_users_distributions(db: Session=Depends(get_db)):
 
     # user-recipes distributions and probabilities.
     taste = bayse.create_prior()
     strength = bayse.create_prior()
     conditional = bayse.create_condional()
 
-    for evaluation in crud.get_evaluations(db):  # TODO: by_user=user_id
+    for evaluation in crud.get_evaluations(db):
         taste = bayse.update(taste, conditional, evaluation.taste)
         strength = bayse.update(strength, conditional, evaluation.strength)
 
@@ -84,6 +72,14 @@ def read_user_distributions(user_id: int, db: Session=Depends(get_db)):
     }
 
     return distributions
+
+
+@app.get('/users/{user_id}', response_model=schemas.User)
+def read_user(user_id: int, db: Session=Depends(get_db)):
+    db_user = crud.get_user(db, id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail='User not found')
+    return db_user
 
 
 @app.post('/beans_list', response_model=schemas.Beans)
