@@ -19,7 +19,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import BottomBar from '../../sections/BottomBar';
+import BottomBar from '../sections/BottomBar';
 
 const axios = require('axios');
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
@@ -43,44 +43,45 @@ export default function Home() {
     setModalOpen(!modalOpen);
   }
 
-  console.log({items})
   useEffect(() => {
     if (!modalOpen) {
 
+      let tmp = {};
+
       axios.get('/users/distributions')
         .then(res => {
-          setDistributions({
-            ...distributions,
-            users_taste: {
-              name: 'コーヒーの嗜好（酸味・苦味, すべてのユーザー）',
-              values: res.data.taste,
-            },
-            users_strength: {
-              name: 'コーヒーの嗜好（濃度, すべてのユーザー）',
-              values: res.data.strength,
-            },
-          });
+          tmp.users_taste = {
+            name: 'コーヒーの嗜好（酸味・苦味, すべてのユーザー）',
+            values: res.data.taste,
+          };
+          tmp.users_strength = {
+            name: 'コーヒーの嗜好（濃度, すべてのユーザー）',
+            values: res.data.strength,
+          };
         })
         .catch(error => {
           console.log({error});
+        })
+        .finally(() => {
+          setDistributions(JSON.parse(JSON.stringify(tmp)));
         });
 
       axios.get('/recipes/distributions')
         .then(res => {
-          setDistributions({
-            ...distributions,
-            recipes_taste: {
-              name: 'レシピの傾向（酸味・苦味, すべてのユーザー）',
-              values: res.data.taste,
-            },
-            recipes_strength: {
-              name: 'レシピの傾向（濃度, すべてのユーザー）',
-              values: res.data.strength,
-            },
-          });
+          tmp.recipes_taste = {
+            name: 'レシピの傾向（酸味・苦味, すべてのユーザー）',
+            values: res.data.taste,
+          };
+          tmp.recipes_strength = {
+            name: 'レシピの傾向（濃度, すべてのユーザー）',
+            values: res.data.strength,
+          };
         })
         .catch(error => {
           console.log({error});
+        })
+        .finally(() => {
+          setDistributions(JSON.parse(JSON.stringify(tmp)));
         });
 
     } else {
@@ -188,23 +189,24 @@ export default function Home() {
           </>
         ) : (
           <List disablePadding>
-            {distributions.map((distribution, i) => (
-              <Fragment key={distribution.id} >
-                {i > 0 && (
-                  <Divider component="li" />
-                )}
-                <ListItem key={i} disablePadding>
-                  <ListItemButton component="a" href="#simple-list">
-                    <ListItemText
-                      primary={distribution.name}
-                      secondary={
-                        <Typography>{distribution.values}</Typography>
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              </Fragment>
-            ))}
+            {Object.keys(distributions).map((key, i) => {
+              const value = distributions[key];
+              return (
+                <Fragment key={key} >
+                  {i > 0 && (
+                    <Divider component="li" />
+                  )}
+                  <ListItem key={i} disablePadding>
+                    <ListItemButton component="a" href="#simple-list">
+                      <ListItemText
+                        primary={value.name}
+                        secondary={value.values}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                </Fragment>
+              )
+            })}
           </List>
         )}
       </Container>
