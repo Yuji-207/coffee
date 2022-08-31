@@ -43,7 +43,6 @@ export default function Evaluations() {
     setModalOpen(!modalOpen);
   }
 
-  console.log({items})
   useEffect(() => {
     if (!modalOpen) {
 
