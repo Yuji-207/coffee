@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 
 import BottomBar from '../sections/BottomBar';
+import Chart from '../sections/Chart';
 
 const axios = require('axios');
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
@@ -50,11 +51,11 @@ export default function Home() {
 
       axios.get('/users/distributions')
         .then(res => {
-          tmp.users_taste = {
+          tmp.usersTaste = {
             name: 'ユーザーの嗜好（酸味・苦味）',
             values: res.data.taste,
           };
-          tmp.users_strength = {
+          tmp.usersStrength = {
             name: 'ユーザーの嗜好（濃度）',
             values: res.data.strength,
           };
@@ -68,11 +69,11 @@ export default function Home() {
 
       axios.get('/recipes/distributions')
         .then(res => {
-          tmp.recipes_taste = {
+          tmp.recipesTaste = {
             name: 'レシピの傾向（酸味・苦味）',
             values: res.data.taste,
           };
-          tmp.recipes_strength = {
+          tmp.recipesStrength = {
             name: 'レシピの傾向（濃度）',
             values: res.data.strength,
           };
@@ -200,7 +201,14 @@ export default function Home() {
                     <ListItemButton component="a" href="#simple-list">
                       <ListItemText
                         primary={value.name}
-                        secondary={value.values}
+                        secondary={
+                          <Chart data={value.values} margin={{
+                            top: 20,
+                            right: 30,
+                            left: 0,
+                            bottom: 20,
+                          }}/>
+                        }
                       />
                     </ListItemButton>
                   </ListItem>
