@@ -51,11 +51,11 @@ export default function Home() {
       axios.get('/users/distributions')
         .then(res => {
           tmp.users_taste = {
-            name: 'コーヒーの嗜好（酸味・苦味, すべてのユーザー）',
+            name: 'ユーザーの嗜好（酸味・苦味）',
             values: res.data.taste,
           };
           tmp.users_strength = {
-            name: 'コーヒーの嗜好（濃度, すべてのユーザー）',
+            name: 'ユーザーの嗜好（濃度）',
             values: res.data.strength,
           };
         })
@@ -69,11 +69,11 @@ export default function Home() {
       axios.get('/recipes/distributions')
         .then(res => {
           tmp.recipes_taste = {
-            name: 'レシピの傾向（酸味・苦味, すべてのユーザー）',
+            name: 'レシピの傾向（酸味・苦味）',
             values: res.data.taste,
           };
           tmp.recipes_strength = {
-            name: 'レシピの傾向（濃度, すべてのユーザー）',
+            name: 'レシピの傾向（濃度）',
             values: res.data.strength,
           };
         })
