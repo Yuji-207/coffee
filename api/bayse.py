@@ -5,7 +5,7 @@ from scipy.stats import norm
 
 def create_prior():
     """
-    Create a 2-D prior distribution.
+    Create a 3-D prior distribution.
     """
 
     x = np.arange(-3.03, 3.09, 0.06)
@@ -20,16 +20,16 @@ def create_prior():
 
 def create_posteriors(posterior):
     """
-    Create splited distributions from a 2-D posterior distribution.
+    Create splited distributions from a 3-D posterior distribution.
     """
-    user = posterior.sum(axis=1).reshape(-1, 1)
-    recipe = posterior.sum(axis=0).reshape(1, -1)
+    user = posterior.sum(axis=1).sum(axis=-1).reshape(-1, 1)
+    recipe = posterior.sum(axis=0).sum(axis=-1).reshape(1, -1)
     return user, recipe
 
 
 def create_condional():
     """
-    Create a 2-D conditional probabilities.
+    Create a 3-D conditional probabilities.
     """
 
     x = np.arange(-3, 3.01, 0.06)
@@ -55,11 +55,11 @@ def update(prior, conditional, num):
 
     # P(E)
     event_all = event.sum(axis=0).sum(axis=0)
-    event_all = np.tile(event, (101, 101, 1))
+    event_all = np.tile(event_all, (101, 101, 1))
 
     # P(A|E) = P(E|A) * P(A) / P(E)
     posterior = event / event_all
-    posterior = posterior[..., num]
+    posterior = posterior[..., num].reshape(101, 101, 1)
 
     return posterior
 
