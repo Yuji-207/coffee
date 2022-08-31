@@ -190,14 +190,16 @@ export default function Evaluations() {
                 <ListItem key={i} disablePadding>
                   <ListItemButton component="a" href="#simple-list">
                     <ListItemText
-                      primary={item.recipe.beans !== undefined && item.recipe.beans.name}
+                      primary={item.recipe.beans !== undefined && (
+                        item.recipe.beans.name
+                      )}
                       secondary={
                         <>
                           <Typography>
                             温度：{item.recipe !== undefined && (
                               item.recipe.temperature
-                             )} ℃
-                            </Typography>
+                            )} ℃
+                          </Typography>
                           <Typography>味わい：{item.taste}</Typography>
                           <Typography>濃さ：{item.strength}</Typography>
                         </>
