@@ -11,10 +11,16 @@ import {
 
 import ArticleIcon from '@mui/icons-material/Article';
 import CreateIcon from '@mui/icons-material/Create';
+import HomeIcon from '@mui/icons-material/Home';
 import PublicIcon from '@mui/icons-material/Public';
 
 
 const menuItems = [
+  {
+    name: 'ホーム',
+    icon: <HomeIcon />,
+    href: '/',
+  },
   {
     name: 'レシピの評価',
     icon: <CreateIcon />,
@@ -28,7 +34,7 @@ const menuItems = [
   {
     name: 'コーヒー豆',
     icon: <PublicIcon />,
-    href: '/evaluations',
+    href: '/beans',
   },
 ];
 
