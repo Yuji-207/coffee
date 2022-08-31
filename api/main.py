@@ -1,12 +1,13 @@
 # TODO: post・getの順番を入れ替える
 # TODO: 複数形を_listに統一する
+# TODO: パスパラメータのみuser -> idなどにする
 
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from . import crud, models, schemas
+from . import crud, models, schemas, bayse
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -55,6 +56,23 @@ def read_user(user_id: int, db: Session=Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail='User not found')
     return db_user
+
+
+@app.get('/users/{user_id}/distributions', response_model=schemas.Distribution)
+def read_user_distributions(user_id: int, db: Session=Depends(get_db)):
+
+    # person-recipe prior distributions
+    taste = bayse.create_prior()
+    strength = bayse.create_prior()
+
+    for evaluation in crud.get_evaluations(db):  # TODO: by_user=user_id
+        taste = bayse.update(taste, evaluation.taste)
+        strength = bayse.update(strength, evaluation.strength)
+
+    taste_person, taste_recipe = bayse.create_posteriors(taste)
+    strength_person, strength_recipe = bayse.create_posteriors(strength)
+
+    return taste_person, strength_person, taste_recipe, strength_recipe
 
 
 @app.post('/beans_list', response_model=schemas.Beans)
