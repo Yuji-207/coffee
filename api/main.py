@@ -61,7 +61,7 @@ def read_user(user_id: int, db: Session=Depends(get_db)):
 @app.get('/users/{user_id}/distributions', response_model=schemas.Distribution)
 def read_user_distributions(user_id: int, db: Session=Depends(get_db)):
 
-    # person-recipe prior distributions
+    # user-recipes prior distributions
     taste = bayse.create_prior()
     strength = bayse.create_prior()
 
@@ -69,10 +69,15 @@ def read_user_distributions(user_id: int, db: Session=Depends(get_db)):
         taste = bayse.update(taste, evaluation.taste)
         strength = bayse.update(strength, evaluation.strength)
 
-    taste_person, taste_recipe = bayse.create_posteriors(taste)
-    strength_person, strength_recipe = bayse.create_posteriors(strength)
+    taste, _ = bayse.create_posteriors(taste)
+    strength, _ = bayse.create_posteriors(strength)
 
-    return taste_person, strength_person, taste_recipe, strength_recipe
+    distributions = {
+        'taste': taste,
+        'strength': strength
+    }
+
+    return distributions
 
 
 @app.post('/beans_list', response_model=schemas.Beans)
@@ -119,6 +124,28 @@ def create_recipe(
 def read_recipes(skip: int=0, limit: int=100, db: Session=Depends(get_db)):
     recipes = crud.get_recipes(db, skip=skip, limit=limit)
     return recipes
+
+
+@app.get('/recipes/distributions', response_model=schemas.Distribution)
+def read_recipe_distributions(db: Session=Depends(get_db)):
+
+    # user-recipes prior distributions
+    taste = bayse.create_prior()
+    strength = bayse.create_prior()
+
+    for evaluation in crud.get_evaluations(db):  # TODO: by_user=user_id
+        taste = bayse.update(taste, evaluation.taste)
+        strength = bayse.update(strength, evaluation.strength)
+
+    _, taste = bayse.create_posteriors(taste)
+    _, strength = bayse.create_posteriors(strength)
+
+    distributions = {
+        'taste': taste,
+        'strength': strength
+    },
+
+    return distributions
 
 
 @app.get('/recipes/{recipe_id}', response_model=schemas.Recipe)
