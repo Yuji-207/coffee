@@ -44,17 +44,15 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text('coffee'),
       ),
-      body: Center(
-        child: Container(
-          child: ElevatedButton(
-            child: Text('次へ'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Beans()),
-              );
-            },
-          ),
+      body: Container(
+        child: ElevatedButton(
+          child: Text('次へ'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Beans()),
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
